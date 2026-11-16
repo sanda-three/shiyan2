@@ -1,0 +1,14 @@
+# ================= JDBC 配置（MySQL 8.x） =================
+# 这是模板文件：把本文件复制为 src/main/resources/jdbc.properties，
+# 再把占位值改成本机真实配置即可。真实的 jdbc.properties 已被 .gitignore 忽略，
+# 不会进入 Git 仓库。
+jdbc.driver=com.mysql.cj.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/emp_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+jdbc.username=你的数据库用户名
+jdbc.password=你的数据库密码
+
+# ================= Druid 连接池参数 =================
+druid.initialSize=5
+druid.minIdle=5
+druid.maxActive=20
+druid.maxWait=6000
