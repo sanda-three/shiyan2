@@ -14,7 +14,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>5.3.39</spring.version>
+        <!-- Tomcat 11 适配：Spring 6.2（要求 JDK 17+，支持 jakarta.* 命名空间） -->
+        <spring.version>6.2.5</spring.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <mysql.version>8.0.33</mysql.version>
         <jackson.version>2.15.4</jackson.version>
@@ -44,11 +45,11 @@
             <artifactId>mybatis-plus</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-        <!-- mybatis-spring：Spring 5 整合 MyBatis/MP 必需，非 Boot 场景需显式引入 -->
+        <!-- mybatis-spring：Spring 6 必须使用 3.0.x（2.x 仅兼容 Spring 5） -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>2.1.2</version>
+            <version>3.0.4</version>
         </dependency>
 
         <!-- MySQL 驱动 -->
@@ -65,24 +66,29 @@
             <version>1.2.23</version>
         </dependency>
 
-        <!-- Servlet / JSP（由容器提供，scope 为 provided） -->
+        <!-- Servlet / JSP（Jakarta EE，由 Tomcat 11 容器提供，scope 为 provided） -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.3</version>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- JSTL -->
+        <!-- JSTL（jakarta 命名空间版，API + 实现） -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <!-- Jackson（SpringMVC JSON 消息转换） -->
@@ -145,8 +151,9 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
-                    <!-- 保留标准 WEB-INF 结构，要求存在 web.xml -->
-                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                    <!-- 步骤 3.1：全部配置已由 WebAppInitializer 代码化，
+                         不再需要 web.xml，关闭缺失校验 -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
         </plugins>
