@@ -3,7 +3,7 @@
 # 再把占位值改成本机真实配置即可。真实的 jdbc.properties 已被 .gitignore 忽略，
 # 不会进入 Git 仓库。
 jdbc.driver=com.mysql.cj.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost:3306/emp_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+jdbc.url=jdbc:mysql://localhost:3306/ssm_emp?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
 jdbc.username=你的数据库用户名
 jdbc.password=你的数据库密码
 
