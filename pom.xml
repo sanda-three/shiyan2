@@ -38,6 +38,13 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <!-- AOP（步骤 6.4 请求日志切面）：@Aspect 注解与 AspectJ 织入支持。
+             spring-webmvc 只带了 spring-aop，@Aspect/@Around 需要 spring-aspects -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
         <!-- MyBatis-Plus（含 mybatis、mybatis-plus-extension，但不含 mybatis-spring） -->
         <dependency>
@@ -98,6 +105,20 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- 参数校验：Hibernate Validator 8（jakarta.validation 3.0 实现，Spring 6 集成需手动引入） -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <!-- EL 表达式实现：部署时由 Tomcat 提供，本地验证工具需要自备，scope 为 test -->
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>5.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- 日志：SLF4J + reload4j（slf4j-log4j12 已被重定位为 slf4j-reload4j，勿再显式引入 log4j:log4j 以免类重复） -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -146,6 +167,16 @@
     <build>
         <finalName>emp-mis</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <!-- Spring 6.1+ 不再通过字节码调试信息推断参数名，
+                         必须开启 -parameters 保留方法参数名供 @RequestParam 等使用 -->
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

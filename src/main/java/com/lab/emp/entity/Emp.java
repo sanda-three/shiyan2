@@ -1,16 +1,22 @@
 package com.lab.emp.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 员工实体类（MyBatis-Plus 实体），对应表 emp
- * MP 默认按"驼峰字段名 -> 下划线列名"推导列（empName -> emp_name），
- * 主键使用数据库自增策略
+ * 员工实体类（MyBatis-Plus 实体），对应实验一 ssm_emp 库 emp 表
+ * 列映射（MP 驼峰转下划线规则，本表列名单词无需转换）：
+ * emp_id / emp_name / gender / dept / post / salary / hire_date / status
+ * 校验注解供 Controller @Valid 参数校验使用
  */
 @TableName("emp")
 public class Emp {
@@ -19,29 +25,40 @@ public class Emp {
     @TableId(value = "emp_id", type = IdType.AUTO)
     private Integer empId;
 
-    /** 员工姓名 */
+    /** 员工姓名（非空，最长 50） */
+    @NotBlank(message = "员工姓名不能为空")
+    @Size(max = 50, message = "员工姓名长度不能超过 50")
     private String empName;
 
-    /** 性别 */
+    /** 性别（男/女） */
+    @Pattern(regexp = "^[男女]$", message = "性别只能是男或女")
     private String gender;
 
     /** 部门 */
-    private String department;
+    @Size(max = 50, message = "部门长度不能超过 50")
+    private String dept;
 
     /** 岗位 */
-    private String jobTitle;
-
-    /** 邮箱 */
-    private String email;
-
-    /** 电话 */
-    private String phone;
+    @Size(max = 50, message = "岗位长度不能超过 50")
+    private String post;
 
     /** 薪资 */
+    @DecimalMin(value = "0", message = "薪资不能为负数")
     private BigDecimal salary;
 
     /** 入职日期 */
     private Date hireDate;
+
+    /** 在职状态：1 在职，0 离职（新增未传时由数据库默认值 1 填充） */
+    private Integer status;
+
+    /**
+     * 所属部门对象（多对一方向的关联字段，一对多拓展）。
+     * exist=false：非数据库列，由 EmpServiceImpl.listWithDept 按
+     * emp.dept = dept.dept_name 关联填充；JSON 中序列化为 deptInfo 嵌套对象
+     */
+    @TableField(exist = false)
+    private Dept deptInfo;
 
     public Integer getEmpId() {
         return empId;
@@ -67,36 +84,20 @@ public class Emp {
         this.gender = gender;
     }
 
-    public String getDepartment() {
-        return department;
+    public String getDept() {
+        return dept;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setDept(String dept) {
+        this.dept = dept;
     }
 
-    public String getJobTitle() {
-        return jobTitle;
+    public String getPost() {
+        return post;
     }
 
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPost(String post) {
+        this.post = post;
     }
 
     public BigDecimal getSalary() {
@@ -115,18 +116,33 @@ public class Emp {
         this.hireDate = hireDate;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Dept getDeptInfo() {
+        return deptInfo;
+    }
+
+    public void setDeptInfo(Dept deptInfo) {
+        this.deptInfo = deptInfo;
+    }
+
     @Override
     public String toString() {
         return "Emp{" +
                 "empId=" + empId +
                 ", empName='" + empName + '\'' +
                 ", gender='" + gender + '\'' +
-                ", department='" + department + '\'' +
-                ", jobTitle='" + jobTitle + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
+                ", dept='" + dept + '\'' +
+                ", post='" + post + '\'' +
                 ", salary=" + salary +
                 ", hireDate=" + hireDate +
+                ", status=" + status +
                 '}';
     }
 }
